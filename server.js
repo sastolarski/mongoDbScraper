@@ -6,6 +6,9 @@ var path = require("path");
 var request = require("request");
 var cheerio = require("cheerio");
 
+var Article = require("./models/article.js");
+
+
 // For Express
 var app = express();
 var port = process.env.PORT || 3000;
@@ -37,9 +40,15 @@ db.once("open", function () {
 
 
 //Routes
-app.get("/", function (req, res) {
-    res.render("homePage")
-})
+app.get("/", function(req, res) {
+    Article.find({"saved": false}, function(error, data) {
+      var hbsObject = {
+        article: data
+      };
+      console.log(hbsObject);
+      res.render("homePage", hbsObject);
+    });
+  });
 
 
 app.listen(port, function () {
